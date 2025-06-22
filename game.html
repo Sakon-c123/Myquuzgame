@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>เกมของเด็กชายอั้ง</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 20px; background: #f3f9f8; }
+    h1, h2, h3 { color: #2c3e50; }
+    button { margin: 10px; padding: 10px 20px; font-size: 16px; }
+    .question-box { margin-top: 20px; }
+    .choice { background: #fff; border: 1px solid #ccc; cursor: pointer; margin: 10px auto; width: 60%; }
+    .choice:hover { background-color: #e0f7fa; }
+  </style>
+</head>
+<body>
+
+<h1>🌟 เกมของเด็กชายอั้ง 🌟</h1>
+<h2>🌸 เกมดอกไม้ประจำจังหวัด 🌸</h2>
+
+<div id="game">
+  <p id="score">คะแนน: 0</p>
+  <div id="question-container" class="question-box"></div>
+  <div id="choices"></div>
+  <p id="explanation"></p>
+</div>
+
+<script>
+const data = [
+  { province: "อุบลราชธานี", flower: "ดอกบัว", explanation: "ดอกบัวเป็นสัญลักษณ์ของความบริสุทธิ์ และเป็นดอกไม้ประจำจังหวัดอุบลราชธานี" },
+  { province: "เชียงใหม่", flower: "ดอกทองกวาว", explanation: "ทองกวาวหรือดอกจาน เป็นไม้ดอกสีส้มสวยงาม และเป็นสัญลักษณ์ของเชียงใหม่" },
+  { province: "กรุงเทพมหานคร", flower: "ดอกกล้วยไม้", explanation: "กล้วยไม้เป็นสัญลักษณ์ของความงามและความปราณีต" },
+  { province: "ราชบุรี", flower: "ดอกกัลปพฤกษ์", explanation: "กัลปพฤกษ์หรือซากุระเมืองไทย เป็นไม้ดอกสีชมพูอ่อนที่บานในฤดูร้อน" },
+  { province: "ลำปาง", flower: "ดอกพวงแสด", explanation: "ดอกพวงแสดเป็นไม้เลื้อยที่มีดอกสีส้มสด เป็นสัญลักษณ์ของพลังและความมุ่งมั่น" },
+  { province: "สุราษฎร์ธานี", flower: "ดอกปีบ", explanation: "ปีบเป็นไม้ดอกหอม สีขาวบริสุทธิ์" },
+  { province: "พะเยา", flower: "ดอกคำใต้", explanation: "คำใต้เป็นไม้ดอกท้องถิ่นที่หายาก มีความหมายถึงความอบอุ่น" },
+  { province: "ภูเก็ต", flower: "ดอกเฟื่องฟ้า", explanation: "เฟื่องฟ้าเป็นไม้ดอกที่ทนแล้งและงดงาม เหมาะกับเมืองทะเล" },
+  { province: "เลย", flower: "ดอกเสี้ยวดอกขาว", explanation: "เสี้ยวดอกขาวออกดอกสวยในช่วงหน้าหนาว เป็นสัญลักษณ์ของความบริสุทธิ์" },
+  { province: "ศรีสะเกษ", flower: "ดอกลำดวน", explanation: "ลำดวนเป็นไม้หอมที่มีกลิ่นหอมละมุน เป็นดอกไม้ประจำจังหวัดศรีสะเกษ" }
+];
+
+let questions = [...data];
+let score = 0;
+let currentQuestion = 0;
+
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+function askQuestion() {
+  if (currentQuestion >= 10) {
+    document.getElementById("question-container").innerHTML = "<h2>🎉 จบเกม! คุณได้ " + score + " คะแนน</h2>";
+    document.getElementById("choices").innerHTML = "";
+    document.getElementById("explanation").textContent = "";
+    return;
+  }
+
+  const q = questions[currentQuestion];
+  const choices = shuffle([
+    q.flower,
+    ...shuffle(data.filter(d => d.province !== q.province)).slice(0, 2).map(d => d.flower)
+  ]);
+
+  document.getElementById("question-container").innerHTML = `<h3>ดอกไม้ชนิดใดเป็นดอกไม้ประจำจังหวัด <b>${q.province}</b>?</h3>`;
+  document.getElementById("choices").innerHTML = "";
+  document.getElementById("explanation").textContent = "";
+
+  choices.forEach(choice => {
+    const btn = document.createElement("button");
+    btn.textContent = choice;
+    btn.className = "choice";
+    btn.onclick = () => checkAnswer(choice, q);
+    document.getElementById("choices").appendChild(btn);
+  });
+}
+
+function checkAnswer(answer, q) {
+  if (answer === q.flower) {
+    score += 1;
+    document.getElementById("explanation").textContent = "✅ ถูกต้อง! " + q.explanation;
+  } else {
+    document.getElementById("explanation").textContent = "❌ ผิดจ้า คำตอบที่ถูกคือ: " + q.flower + " — " + q.explanation;
+  }
+  document.getElementById("score").textContent = "คะแนน: " + score;
+  currentQuestion++;
+  setTimeout(askQuestion, 2500);
+}
+
+shuffle(questions);
+askQuestion();
+</script>
+
+</body>
+</html>
